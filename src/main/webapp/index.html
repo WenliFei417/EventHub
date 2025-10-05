@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Item Recommendation" />
+    <title>Item Recommendation · 2025</title>
+</head>
+<body>
+<header class="top-header">
+    <nav class="top-nav" aria-label="Top">
+        <ul>
+            <li><a href="/" aria-current="page">Home</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="container">
+    <header>
+        <h1>Item <span>Recommendation</span></h1>
+    </header>
+
+    <section class="main-section">
+        <aside id="item-nav" aria-label="Sections">
+            <div class="nav-icon" aria-hidden="true">📚</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/nearby" id="nearby-btn" aria-current="page">📍 Nearby</a></li>
+                    <li><a href="/favorites" id="fav-btn">❤️ My Favorites</a></li>
+                    <li><a href="/recommend" id="recommend-btn">👍 Recommendation</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <ul id="item-list" role="list">
+            <li class="item" role="article">
+                <img
+                        src="https://s3-media3.fl.yelpcdn.com/bphoto/EmBj4qlyQaGd9Q4oXEhEeQ/ms.jpg"
+                        alt="Vegetarian restaurant exterior"
+                        width="240" height="160"
+                        loading="lazy" decoding="async"
+                />
+                <div>
+                    <a class="item-name" href="/items/123">Item</a>
+                    <p class="item-category">Vegetarian</p>
+                    <div class="stars" aria-label="Rating: 3 out of 5">★★★☆☆</div>
+                </div>
+
+                <address class="item-address">
+                    699 Calderon Ave<br>
+                    Mountain View, CA
+                </address>
+
+                <div class="fav-link">
+                    <button type="button" aria-pressed="false" aria-label="Add to favorites">♡</button>
+                </div>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p class="title"><strong>What We Do</strong></p>
+    <p>“Help you find the best place around.”</p>
+    <ul>
+        <li>
+            <p aria-hidden="true">🗺️</p>
+            <p>LaiOffer office, CA</p>
+        </li>
+        <li>
+            <p aria-hidden="true">✉️</p>
+            <p><a href="mailto:info@laioffer.com">info@laioffer.com</a></p>
+        </li>
+        <li>
+            <p aria-hidden="true">📞</p>
+            <p><a href="tel:+1800123456">+1 800 123 456</a></p>
+        </li>
+    </ul>
+</footer>
+</body>
+</html>
