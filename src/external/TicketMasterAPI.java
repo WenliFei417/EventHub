@@ -93,5 +93,13 @@ public class TicketMasterAPI {
 
     public static void main(String[] args) {
         System.out.println("TicketMaster API initialized successfully.");
+        TicketMasterAPI tmApi = new TicketMasterAPI();
+        // Mountain View, CA
+        tmApi.queryAPI(37.38, -122.08);
+        // London, UK
+        // tmApi.queryAPI(51.503364, -0.12);
+        // Houston, TX
+        //tmApi.queryAPI(29.682684, -95.295410);
+
     }
 }
