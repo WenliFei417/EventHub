@@ -1,9 +1,11 @@
 package rpc;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -40,4 +42,24 @@ public class RpcHelper {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Parses a JSONObject from http request.
+    public static JSONObject readJsonObject(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedReader reader = request.getReader();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            return new JSONObject(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
 }

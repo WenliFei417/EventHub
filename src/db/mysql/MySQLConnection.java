@@ -3,10 +3,8 @@ package db.mysql;
 import entity.Item;
 import external.TicketMasterAPI;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,27 +41,127 @@ public class MySQLConnection implements db.DBConnection{
 
     @Override
     public void setFavoriteItems(String userId, List<String> itemIds) {
+        if (conn == null) {
+            return;
+        }
+
+        try {
+            String sql = "INSERT IGNORE INTO history (user_id, item_id) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            for (String itemId : itemIds) {
+                stmt.setString(1, userId);
+                stmt.setString(2, itemId);
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void unsetFavoriteItems(String userId, List<String> itemIds) {
+        if (conn == null) {
+            return;
+        }
+
+        try {
+            String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            for (String itemId : itemIds) {
+                stmt.setString(1, userId);
+                stmt.setString(2, itemId);
+                stmt.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public Set<String> getFavoriteItemIds(String userId) {
-        return Set.of();
+        if (conn == null) {
+            return new HashSet<>();
+        }
+
+        Set<String> favoriteItemIds = new HashSet<>();
+
+        try {
+            String sql = "SELECT item_id from history where user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String itemId = rs.getString("item_id");
+                favoriteItemIds.add(itemId);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return favoriteItemIds;
     }
+
 
     @Override
     public Set<Item> getFavoriteItems(String userId) {
-        return Set.of();
+        if (conn == null) {
+            return new HashSet<>();
+        }
+
+        Set<Item> favoriteItems = new HashSet<>();
+        Set<String> itemIds = getFavoriteItemIds(userId);
+
+        try {
+            String sql = "SELECT * FROM items WHERE item_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            for (String itemId : itemIds) {
+                stmt.setString(1, itemId);
+
+                ResultSet rs = stmt.executeQuery();
+
+                Item.ItemBuilder builder = new Item.ItemBuilder();
+
+                while (rs.next()) {
+                    builder.setItemId(rs.getString("item_id"));
+                    builder.setName(rs.getString("name"));
+                    builder.setAddress(rs.getString("address"));
+                    builder.setImageUrl(rs.getString("image_url"));
+                    builder.setUrl(rs.getString("url"));
+                    builder.setCategories(getCategories(itemId));
+                    builder.setDistance(rs.getDouble("distance"));
+                    builder.setRating(rs.getDouble("rating"));
+
+                    favoriteItems.add(builder.build());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return favoriteItems;
     }
 
     @Override
     public Set<String> getCategories(String itemId) {
-        return Set.of();
+        if (conn == null) {
+            return null;
+        }
+        Set<String> categories = new HashSet<>();
+        try {
+            String sql = "SELECT category from categories WHERE item_id = ? ";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, itemId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                categories.add(rs.getString("category"));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return categories;
     }
 
     @Override
