@@ -2,12 +2,14 @@ package rpc;
 
 import db.DBConnection;
 import db.DBConnectionFactory;
+import entity.Item;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -15,12 +17,12 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
-@WebServlet("/history")   // 在 IDEA 中用注解完成 URL 映射
+@WebServlet("/history")
 public class ItemHistory extends HttpServlet {
 
-    // 统一写出 JSON 的小工具
     private void writeJson(HttpServletResponse resp, int status, String json) throws IOException {
         resp.setStatus(status);
         resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -30,30 +32,25 @@ public class ItemHistory extends HttpServlet {
         }
     }
 
-    // GET /history?userId=123
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String userId = req.getParameter("userId");
-        if (userId == null || userId.isEmpty()) {
-            writeJson(resp, HttpServletResponse.SC_BAD_REQUEST,
-                    "{\"error\":\"missing userId\"}");
-            return;
+        String userId = request.getParameter("user_id");
+        JSONArray array = new JSONArray();
+
+        DBConnection conn = DBConnectionFactory.getConnection();
+        Set<Item> items = conn.getFavoriteItems(userId);
+        for (Item item : items) {
+            JSONObject obj = item.toJSONObject();
+            try {
+                obj.append("favorite", true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            array.put(obj);
         }
+        RpcHelper.writeJsonArray(response, array);
 
-        // TODO: 根据 userId 查询历史记录（数据库/缓存）
-        // 示例返回
-        String result = """
-                {
-                  "userId": "%s",
-                  "items": [
-                    {"id":"h1","title":"Example A"},
-                    {"id":"h2","title":"Example B"}
-                  ]
-                }
-                """.formatted(userId);
-
-        writeJson(resp, HttpServletResponse.SC_OK, result);
     }
 
     @Override

@@ -13,38 +13,52 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.Collections;
 
 @WebServlet(name = "SearchItem", urlPatterns = {"/search"})
 public class SearchItem extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        JSONArray arr = new JSONArray()
-//               .put(new JSONObject().put("username", "abcd"))
-//                .put(new JSONObject().put("username", "1234"));
-//        RpcHelper.writeJsonArray(resp, arr);
         JSONArray array = new JSONArray();
+        DBConnection connection = null;
         try {
-            double lat = Double.parseDouble(request.getParameter("lat"));
-            double lon = Double.parseDouble(request.getParameter("lon"));
-            String keyword = request.getParameter("term");
+            // 1) 读取请求参数
+            final String userId = request.getParameter("user_id");
+            final String latStr = request.getParameter("lat");
+            final String lonStr = request.getParameter("lon");
+            final String keyword = request.getParameter("term"); // 可能为空或空字符串
 
-//            TicketMasterAPI tmAPI = new TicketMasterAPI();
-//            List<Item> items = tmAPI.search(lat, lon, keyword);
+            // 基本必需参数
+            double lat = Double.parseDouble(latStr);
+            double lon = Double.parseDouble(lonStr);
 
-            DBConnection connection = DBConnectionFactory.getConnection();
+            // 2) 使用同一个连接查询商品和用户收藏
+            connection = DBConnectionFactory.getConnection();
             List<Item> items = connection.searchItems(lat, lon, keyword);
-            connection.close();
 
+            // 如果 userId 缺失，使用空集合保持前端接口一致
+            Set<String> favorite = (userId == null || userId.isEmpty())
+                    ? Collections.emptySet()
+                    : connection.getFavoriteItemIds(userId);
+
+            // 3) 构建响应 JSON，添加前端需要的收藏标记
             for (Item item : items) {
                 JSONObject obj = item.toJSONObject();
+                obj.put("favorite", favorite.contains(item.getItemId()));
                 array.put(obj);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try { connection.close(); } catch (Exception ignore) {} // 关闭连接，忽略异常
+            }
         }
-        RpcHelper.writeJsonArray(response, array);
 
+        // 4) 输出结果
+        RpcHelper.writeJsonArray(response, array);
     }
 
     @Override

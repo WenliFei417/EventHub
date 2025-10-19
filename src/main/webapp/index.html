@@ -1,81 +1,130 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- 页面通用元信息：编码、视口、SEO 描述、作者 -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Item Recommendation" />
+    <meta name="author" content="Your Name" />
     <title>Item Recommendation · 2025</title>
+
+    <!-- 图标库（Font Awesome）CDN：用于页面内的小图标展示 -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- 你的样式 -->
+    <link rel="stylesheet" href="styles/main.css?v=20251017" />
+
+    <!-- 如需 MD5（例如头像哈希），可打开；不用就保持注释 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/js-md5@0.8.3/build/md5.min.js" defer></script> -->
+
+    <!-- 你的脚本 -->
+    <script src="scripts/main.js?v=20251017" defer></script>
 </head>
 <body>
+<!-- 顶部导航 -->
 <header class="top-header">
+    <!-- 站点主导航：Home/Contact/About；href="#" 由 JS 拦截处理，避免整页跳转 -->
     <nav class="top-nav" aria-label="Top">
         <ul>
-            <li><a href="/" aria-current="page">Home</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="#" id="nav-home" aria-current="page">Home</a></li>
+            <li><a href="#" id="nav-contact">Contact</a></li>
+            <li><a href="#" id="nav-about">About</a></li>
         </ul>
     </nav>
+    <!-- 动态欢迎语占位：由 scripts/main.js 根据登录/用户态填充 -->
+    <span id="welcome-msg" class="visually-hidden" aria-live="polite"></span>
+    <!-- 用户头像占位：可结合 Gravatar（md5 邮箱）或自定义头像显示 -->
+    <i id="avatar" class="avatar fa-solid fa-user fa-2x" aria-hidden="true"></i>
 </header>
 
+<!-- 主体：包含标题横幅 + 左侧功能导航 + 右侧推荐列表 -->
 <main class="container">
+    <!-- 页面标题横幅（Hero）：突出产品名/模块名，span 用于高亮 -->
     <header>
         <h1>Item <span>Recommendation</span></h1>
     </header>
 
     <section class="main-section">
+        <!-- 左侧功能导航 -->
         <aside id="item-nav" aria-label="Sections">
-            <div class="nav-icon" aria-hidden="true">📚</div>
+            <!-- 导航图标：仅作装饰/识别，不影响交互 -->
+            <div class="nav-icon" aria-hidden="true">
+                <i class="fa-solid fa-sitemap fa-2x"></i>
+            </div>
+            <!-- 三个功能入口按钮（Nearby / Favorites / Recommendation），由 JS 监听切换内容 -->
             <nav class="main-nav">
-                <ul>
-                    <li><a href="/nearby" id="nearby-btn" aria-current="page">📍 Nearby</a></li>
-                    <li><a href="/favorites" id="fav-btn">❤️ My Favorites</a></li>
-                    <li><a href="/recommend" id="recommend-btn">👍 Recommendation</a></li>
-                </ul>
+                <a href="#" id="nearby-btn" class="main-nav-btn active">
+                    <i class="fa-solid fa-location-dot"></i> Nearby
+                </a>
+                <a href="#" id="fav-btn" class="main-nav-btn">
+                    <i class="fa-solid fa-heart"></i> My Favorites
+                </a>
+                <a href="#" id="recommend-btn" class="main-nav-btn">
+                    <i class="fa-solid fa-thumbs-up"></i> Recommendation
+                </a>
             </nav>
         </aside>
 
-        <ul id="item-list" role="list">
+        <!-- 列表区域：示例一条，真实数据由 JS 渲染 -->
+        <ul id="item-list" role="list" aria-live="polite" aria-busy="false">
             <li class="item" role="article">
+                <!-- 条目封面图：lazy 加载，指定尺寸避免布局抖动 -->
                 <img
                         src="https://s3-media3.fl.yelpcdn.com/bphoto/EmBj4qlyQaGd9Q4oXEhEeQ/ms.jpg"
                         alt="Vegetarian restaurant exterior"
                         width="240" height="160"
                         loading="lazy" decoding="async"
                 />
-                <div>
-                    <a class="item-name" href="/items/123">Item</a>
+                <!-- 条目主信息块：名称 / 分类 / 评分 -->
+                <div class="item-meta">
+                    <!-- 条目名称：data-id 供 JS 事件处理（如跳详情/收藏） -->
+                    <a class="item-name" href="#" data-id="123">Item</a>
                     <p class="item-category">Vegetarian</p>
-                    <div class="stars" aria-label="Rating: 3 out of 5">★★★☆☆</div>
+                    <!-- 评分星级：使用图标显示，同时通过 aria-label 提供读屏说明 -->
+                    <div class="stars" aria-label="Rating: 3 out of 5">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                    </div>
                 </div>
 
+                <!-- 地址信息：用语义化 <address> 标注，右侧对齐 -->
                 <address class="item-address">
                     699 Calderon Ave<br>
                     Mountain View, CA
                 </address>
 
+                <!-- 收藏操作区：使用 button（可聚焦/可读屏），aria-pressed 反映收藏状态 -->
                 <div class="fav-link">
-                    <button type="button" aria-pressed="false" aria-label="Add to favorites">♡</button>
+                    <button type="button" class="fav-btn" aria-pressed="false" aria-label="Add to favorites">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
                 </div>
             </li>
         </ul>
     </section>
 </main>
-
+<!-- 页脚：产品/团队一句话说明 + 联系方式（地址 / 邮箱 / 电话） -->
 <footer>
     <p class="title"><strong>What We Do</strong></p>
     <p>“Help you find the best place around.”</p>
-    <ul>
+    <!-- 联系方式列表：每项包含一个图标 + 文本/链接 -->
+    <ul class="contact-list">
         <li>
-            <p aria-hidden="true">🗺️</p>
-            <p>LaiOffer office, CA</p>
+            <p aria-hidden="true"><i class="fa-regular fa-map"></i></p>
+            <p>Lily office, NY</p>
         </li>
         <li>
-            <p aria-hidden="true">✉️</p>
-            <p><a href="mailto:info@laioffer.com">info@laioffer.com</a></p>
+            <p aria-hidden="true"><i class="fa-regular fa-envelope"></i></p>
+            <p><a href="mailto:viviuuuli@gmail.com">viviuuuli@gmail.com</a></p>
         </li>
         <li>
-            <p aria-hidden="true">📞</p>
-            <p><a href="tel:+1800123456">+1 800 123 456</a></p>
+            <p aria-hidden="true"><i class="fa-solid fa-phone"></i></p>
+            <p><a href="tel:+13154399515">+1 315 439 9515</a></p>
         </li>
     </ul>
 </footer>

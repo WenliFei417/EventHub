@@ -1,32 +1,40 @@
 package rpc;
 
+import algorithm.GeoRecommendation;
+import entity.Item;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "RecommendItem", urlPatterns = {"/recommendation"})
 public class RecommendItem extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JSONArray events = new JSONArray()
-                .put(new JSONObject()
-                        .put("name", "abcd")
-                        .put("address", "san francisco")
-                        .put("time", "01/01/2017"))
-                .put(new JSONObject()
-                        .put("name", "1234")
-                        .put("address", "san jose")
-                        .put("time", "01/02/2017"));
+        String userId = request.getParameter("user_id");
+        double lat = Double.parseDouble(request.getParameter("lat"));
+        double lon = Double.parseDouble(request.getParameter("lon"));
 
-        RpcHelper.writeJsonArray(resp, events);
+        GeoRecommendation recommendation = new GeoRecommendation();
+        List<Item> items = recommendation.recommendItems(userId, lat, lon);
+
+        JSONArray result = new JSONArray();
+        try {
+            for (Item item : items) {
+                result.put(item.toJSONObject());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        RpcHelper.writeJsonArray(response, result);
+
     }
 }
