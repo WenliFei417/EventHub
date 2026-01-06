@@ -5,7 +5,6 @@ It integrates the **Ticketmaster Discovery API** to search for events based on l
 
 This project is fully deployed on **AWS EC2 (Ubuntu)**, uses **JDK 17**, loads sensitive configuration via environment variables, and manages the Tomcat service with **systemd**.
 
-> 🌐 Live Demo: `http://3.133.7.107/` (Port 80)
 
 ---
 
