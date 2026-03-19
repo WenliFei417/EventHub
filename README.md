@@ -15,11 +15,11 @@ Demo source code:
 👉 https://github.com/WenliFei417/EventHub2
 
 **Note:**  
-The original version of EventHub is a full-stack application built with Spring Boot, MySQL, and AWS.  
+The original EventHub project is a full-stack application built with Spring Boot, MySQL, and AWS.
 
-Due to the expiration of the AWS free tier, I created a separate lightweight demo version (`EventHub2`) to ensure the project remains accessible for recruiters and reviewers.  
+Because the AWS free-tier deployment expired, I created a separate demo version (`EventHub2`) for project preview purposes.
 
-This demo focuses on showcasing the core user experience and frontend interactions, while simulating backend behavior without requiring a live cloud deployment.
+Please note that the demo is hosted on Render, so the initial load may take about a minute if the service is waking from inactivity.
 
 ---
 
