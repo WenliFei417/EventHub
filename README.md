@@ -5,6 +5,21 @@ It integrates the **Ticketmaster Discovery API** to search for events based on l
 
 This project is fully deployed on **AWS EC2 (Ubuntu)**, uses **JDK 17**, loads sensitive configuration via environment variables, and manages the Tomcat service with **systemd**.
 
+---
+## 🌐 Live Demo
+
+Frontend demo:  
+👉 https://your-demo-url-here
+
+Demo source code:  
+👉 https://github.com/WenliFei417/EventHub2
+
+**Note:**  
+The original version of EventHub is a full-stack application built with Spring Boot, MySQL, and AWS.  
+
+Due to the expiration of the AWS free tier, I created a separate lightweight demo version (`EventHub2`) to ensure the project remains accessible for recruiters and reviewers.  
+
+This demo focuses on showcasing the core user experience and frontend interactions, while simulating backend behavior without requiring a live cloud deployment.
 
 ---
 
